@@ -1,0 +1,14 @@
+{
+  "name": "2155547e28e9152d",
+  "main": "2155547e28e9152d@3085.js",
+  "version": "3085.0.0",
+  "homepage": "https://observablehq.com/d/2155547e28e9152d",
+  "author": {
+    "name": "Max Walts",
+    "url": "https://observablehq.com/@maxwalts"
+  },
+  "type": "module",
+  "peerDependencies": {
+    "@observablehq/runtime": "4 - 5"
+  }
+}
