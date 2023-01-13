@@ -1,10 +1,10 @@
 # Interactive Charts
 
 ## What's this?
-A work-in-progress utility library for creating interactive charts in the browser. It's built on top of [D3](https://d3js.org/) and [Observable](https://observablehq.com/).
+A work-in-progress module for creating interactive charts in the browser. It's built with [D3](https://d3js.org/).
 
 ## Why?
-This is a part of my research at the Ford School of Public Policy at the University of Michigan. The goal is to create a library that will allow any user to create beautiful interactive charts with minimal effort. I also wanted to be able to create charts that would be easy to embed in other applications.
+This is a research project for the Ford School of Public Policy at the University of Michigan under the guidance of Dr. Justin Wolfers. The goal is to create a library that will allow any user to create beautiful interactive charts with minimal effort and easily embed it in other applications.
 
 https://observablehq.com/d/814c401d07f99a7f@3821
 
