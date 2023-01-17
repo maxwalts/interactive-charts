@@ -1,6 +1,6 @@
 function _1(md) {
   return (
-    md`# Mousetrap`
+    md`# Supply and Demand chart`
   )
 }
 
@@ -13,8 +13,8 @@ function _2(md) {
 function _header() {
   return (
     {
-      title: "Figure 9 | The IS-MP Framework",
-      subtitle: "The state of the economy is determined by the intersection of the IS curve and the MP curve."
+      title: "Supply and Demand",
+      subtitle: ""
     }
   )
 }
@@ -23,22 +23,22 @@ function _lines(colors) {
   return (
     [
       {
-        label: 'MP curve',
+        label: 'Demand',
         labelSize: "14px",
-        point1: [-10, 3],
-        point2: [7, 3],
-        color: colors.supplyRed,
+        point1: [10, 60],
+        point2: [80, 10],
+        color: colors.demandBlue,
         width: 4,
         moveX: true,
-        moveY: true,
+        moveY: false,
         drawOriginLine: true
       },
       {
-        label: 'IS curve',
+        label: 'Supply',
         labelSize: "14px",
-        point1: [-10, 5],
-        point2: [5, .5],
-        color: colors.demandBlue,
+        point1: [10, 10],
+        point2: [80, 90],
+        color: colors.supplyRed,
         width: 4,
         moveX: true,
         moveY: true,
@@ -53,7 +53,7 @@ function _intersectionPoints() {
   return (
     [
       {
-        labels: ["IS curve", "MP curve"],
+        labels: ["Demand", "Supply"],
         isPrimary: true
       }
     ]
@@ -67,19 +67,19 @@ function _xAxisScale(width, margin) {
         width: '170px',
         height: '90px',
         // edit styling in CSS section under axisTitle class
-        html: `<p class="axisTitle"> <b> Output gap </b> <i> (Output relative to potential output) </i> </p>`,
+        html: `<p class="axisTitle"> <b> Quantity </b>  </p>`,
         x: (width - margin.right - 160),
         y: 0,
         size: "12px"
       },
 
-      domain: [-10, 12],
+      domain: [0, 100],
       range: [margin.left, width - margin.right],
       numTicks: 5,
       // Define a custom set of tick values
-      tickValues: [-5, 0, 5],
+      tickValues: [10, 20, 30, 40, 50, 60, 70, 80, 90],
       // Define format of those ticks
-      tickFormat: ['-5%', '0%', '5%'],
+      tickFormat: [10, 20, 30, 40, 50, 60, 70, 80, 90],
       // Define length of the ticks
       tickSize: 0,
       tickSizeOuter: 0
@@ -94,18 +94,18 @@ function _yAxisScale(margin, height) {
         width: '90px',
         height: '100px',
         // edit styling in CSS section under axisTitle class
-        html: `<p class="axisTitle"> <b> Real Interest Rate </b> `,
+        html: `<p class="axisTitle"> <b> Price </b> `,
         x: -90,
         y: margin.top - 20,
         size: "13px"
       },
-      domain: [0, 6],
+      domain: [0, 100],
       range: [height - margin.bottom, margin.top],
       numTicks: 5,
       // Define a custom set of tick values
-      tickValues: [3],
+      tickValues: [10, 20, 30, 40, 50, 60, 70, 80, 90],
       // Define format of those ticks
-      tickFormat: ['3%'],
+      tickFormat: [10, 20, 30, 40, 50, 60, 70, 80, 90],
       // length of the outer ticks
       tickSize: 0,
       tickSizeOuter: 0
@@ -146,7 +146,7 @@ function _footer() {
 
 function _interactionBoundary() {
   return (
-    { xMin: -10, xMax: 10, yMin: 0, yMax: 6 }
+    { xMin: 0, xMax: 90, yMin: 0, yMax: 100 }
   )
 }
 
@@ -156,7 +156,7 @@ function _cutLineOnBoundaryCross() {
   )
 }
 
-function _12(svg, xAxis, yAxis, lines, getCursor, xScale, yScale, getColor, drag, appendHeaderFooter, appendAnnotations, appendLabels, appendIntersectionObjects) {
+function _12(svg, xAxis, yAxis, lines, getCursor, xScale, yScale, getColor, drag, appendHeaderFooter, appendAnnotations, appendLabels, appendStaticIntersectionObjects, appendIntersectionObjects) {
 
   // TODO responsive width
   // TODO lines easier to grab
@@ -195,6 +195,7 @@ function _12(svg, xAxis, yAxis, lines, getCursor, xScale, yScale, getColor, drag
     .call(drag)
 
   // update svg at end of render
+
   update();
 
 
@@ -202,6 +203,7 @@ function _12(svg, xAxis, yAxis, lines, getCursor, xScale, yScale, getColor, drag
     appendHeaderFooter();
     appendAnnotations();
     appendLabels();
+    appendStaticIntersectionObjects();
     appendIntersectionObjects();
   }
 
@@ -324,18 +326,18 @@ text, p {
   
 }
 
-g.x > .tick:first-of-type {
-  color: #92278f;
-}
+// g.x > .tick:first-of-type {
+//   color: #92278f;
+// }
 
-g.x > .tick:first-of-type + .tick, g.x > .tick:first-of-type + .tick + .tick {
-  color: grey;
-}
+// g.x > .tick:first-of-type + .tick, g.x > .tick:first-of-type + .tick + .tick {
+//   color: grey;
+// }
 
-g.y > .tick {
-  color: #d12244; // supplyRed
-  // font-weight: bold;
-}
+// g.y > .tick {
+//   color: #d12244; // supplyRed
+//   // font-weight: bold;
+// }
 
 .axisTitle {
   font-size: 16px;
@@ -373,7 +375,7 @@ function _lineMap() {
   )
 }
 
-function _drag(svg, xScale, yScale, getColor, lineMap, textShadowDark, d3, appendIntersectionObjects, appendLabels, intersectLines, yAxisLine, interactionBoundary, xAxisLine, topLine, yAxisScale, rightLine, xAxisScale, distance, xyScale, LINE_MIN_LENGTH, lines, textShadow, GHOST_MIN_DISTANCE, getCursor) {
+function _drag(svg, xScale, yScale, getColor, lineMap, d3, appendIntersectionObjects, appendLabels, intersectLines, yAxisLine, interactionBoundary, xAxisLine, topLine, yAxisScale, rightLine, xAxisScale, distance, xyScale, LINE_MIN_LENGTH, GHOST_MIN_DISTANCE, getCursor) {
   function dragstarted(event, d) {
 
     d.originalP1 = d.point1;
@@ -382,7 +384,8 @@ function _drag(svg, xScale, yScale, getColor, lineMap, textShadowDark, d3, appen
     // First time
     if (d.drawOriginLine && !d.hasOwnProperty('isAwayFromOrigin')) {
 
-      // svg.selectAll(`line.ghost${d.label}`).remove();
+
+      // create ghost lines
       svg.append('line')
         .classed(`ghost${d.label}`, true)
         .attr('x1', xScale(d.originalP1[0]))
@@ -393,12 +396,6 @@ function _drag(svg, xScale, yScale, getColor, lineMap, textShadowDark, d3, appen
         .attr('stroke', getColor(d))
         .attr('filter', 'brightness(2)')
 
-      lineMap[`line.ghost${d.label}_x1`] = xScale(d.originalP1[0]);
-      lineMap[`line.ghost${d.label}_y1`] = xScale(d.originalP1[1]);
-      lineMap[`line.ghost${d.label}_x2`] = xScale(d.originalP2[0]);
-      lineMap[`line.ghost${d.label}_y2`] = xScale(d.originalP2[1]);
-
-      // svg.selectAll(`text.ghost${d.label}`).remove();
       svg.append('text')
         .classed(`ghost${d.label}`, true)
         .attr('x', xScale(d.originalP2[0]))
@@ -406,10 +403,17 @@ function _drag(svg, xScale, yScale, getColor, lineMap, textShadowDark, d3, appen
         .style('fill', getColor(d))
         .style("font-size", d.labelSize)
         .style("font-weight", 'bold')
-        .style('text-shadow', textShadowDark)
+        // .style('text-shadow', textShadowDark)
         .attr('filter', 'brightness(2)')
         .text(() => `Old ${d.label}`);
 
+
+
+      // save coordinates of ghost lines
+      lineMap[`line.ghost${d.label}_x1`] = xScale(d.originalP1[0]);
+      lineMap[`line.ghost${d.label}_y1`] = yScale(d.originalP1[1]);
+      lineMap[`line.ghost${d.label}_x2`] = xScale(d.originalP2[0]);
+      lineMap[`line.ghost${d.label}_y2`] = yScale(d.originalP2[1]);
 
       d.isAwayFromOrigin = true;
     }
@@ -429,7 +433,7 @@ function _drag(svg, xScale, yScale, getColor, lineMap, textShadowDark, d3, appen
       d3.select(this).attr("stroke-width", d.width * 1.5).attr("filter", "drop-shadow(0 0 .5rem yellow)");
     }
 
-    appendIntersectionObjects();
+    appendIntersectionObjects(d.isAwayFromOrigin);
 
   }
 
@@ -507,7 +511,7 @@ function _drag(svg, xScale, yScale, getColor, lineMap, textShadowDark, d3, appen
         d.x1 = xScale(rightLine.point1[0]);
         d.y1 = yScale(intersectLines(d, rightLine).y);
       }
-      else if (xScale(d.point2[0]) > xScale(0)) {
+      else if (xScale(d.point2[0]) > xScale(xAxisScale.domain[0])) {
         d.x2 = xScale(rightLine.point1[0]);
         d.y2 = yScale(intersectLines(d, rightLine).y);
       }
@@ -541,72 +545,50 @@ function _drag(svg, xScale, yScale, getColor, lineMap, textShadowDark, d3, appen
         .attr('y2', d.y2)
     }
 
-    svg.selectAll("text.label")
-      .data(lines)
-      .enter().append('text')
-      .classed('label', true)
-      .style("font-size", d => d.labelSize)
-      .style("font-family", 'Helvetica Neue, sans-serif')
-      .style('fill', d => getColor(d))
-      .style("font-weight", 'bold')
-      .style('text-shadow', textShadow)
-      .attr("x", d => {
-        return ('x2' in d) ? d.x2 : d.point2[0]
-      })
-      .attr("y", d => {
-        return ('y2' in d) ? d.y2 : d.point2[1]
-      })
-      .text(d => d.label);
-
     appendIntersectionObjects();
-
-
-
   }
 
   function dragended(event, d) {
 
     if (d.drawOriginLine) {
-
       const ghostLineX1 = lineMap[`line.ghost${d.label}_x1`]
-      const draggedLineX1 = d.x1
-      // console.log("ghost x1", ghostLineX1);
-      // console.log("dragged x1", draggedLineX1);
-
-      // const ghostLineY1 = d3.select(`line.ghost${d.label}`).attr("y1")
       const ghostLineY1 = lineMap[`line.ghost${d.label}_y1`]
-      const draggedLineY1 = d.y1
-
       const ghostLineX2 = lineMap[`line.ghost${d.label}_x2`]
       const ghostLineY2 = lineMap[`line.ghost${d.label}_y2`]
-
-      console.log(ghostLineX1 < draggedLineX1 + GHOST_MIN_DISTANCE)
-      console.log(ghostLineX1 > draggedLineX1 - GHOST_MIN_DISTANCE)
-      console.log(ghostLineY1 < draggedLineY1 + GHOST_MIN_DISTANCE)
-      console.log(ghostLineY1)
-      console.log(draggedLineY1)
-      console.log(GHOST_MIN_DISTANCE)
-      console.log(ghostLineY1 > draggedLineY1 - GHOST_MIN_DISTANCE)
+      const draggedLineX1 = d.x1
+      const draggedLineY1 = d.y1
 
       if (
         (ghostLineX1 < draggedLineX1 + GHOST_MIN_DISTANCE && ghostLineX1 > draggedLineX1 - GHOST_MIN_DISTANCE) &&
-        (ghostLineY1 > draggedLineY1 - GHOST_MIN_DISTANCE)) {
-        console.log("make gone");
+        (ghostLineY1 > draggedLineY1 - GHOST_MIN_DISTANCE && ghostLineY1 < draggedLineY1 + GHOST_MIN_DISTANCE)) {
+
         d.x1 = ghostLineX1
         d.y1 = ghostLineY1
         d.x2 = ghostLineX2
         d.y2 = ghostLineY2
+        d.point1[0] = xScale.invert(ghostLineX1)
+        d.point1[1] = yScale.invert(ghostLineY1)
+        d.point2[0] = xScale.invert(ghostLineX2)
+        d.point2[1] = yScale.invert(ghostLineY2)
+        d3.select(this)
+          .attr('x1', d.x1)
+          .attr('y1', d.y1)
+          .attr('x2', d.x2)
+          .attr('y2', d.y2)
+
         d3.select(`line.ghost${d.label}`)
           .attr('opacity', '0')
 
         d3.select(`text.ghost${d.label}`)
           .attr('opacity', '0')
 
+        d3.selectAll("text.staticIntersection").remove();
         d.isAwayFromOrigin = false;
       }
     }
 
-    console.log(this)
+    appendLabels();
+    appendIntersectionObjects();
 
     d3.select(this)
       .attr("cursor", getCursor(d))
@@ -648,12 +630,78 @@ function _appendHeaderFooter(header, svg, margin, height, footer) {
   )
 }
 
-function _appendIntersectionObjects(svg, intersectionPoints, intersectLines, getLineByLabel, xAxisScale, yAxisScale, dropLines, getColor, xScale, height, margin, yScale) {
+function _appendStaticIntersectionObjects(intersectionPoints, intersectLines, getLineByLabel, xAxisScale, yAxisScale, svg, dropLines, xScale, height, margin, yScale) {
   return (
-    function appendIntersectionObjects() {
+    function appendStaticIntersectionObjects() {
+
+
+      intersectionPoints.map(pair => {
+
+        // Guard: in bounds
+        const point = intersectLines(getLineByLabel(pair.labels[0]), getLineByLabel(pair.labels[1]));
+
+        if (point.x >= xAxisScale.domain[0] && point.x <= xAxisScale.domain[1] &&
+          point.y >= yAxisScale.domain[0] && point.y <= yAxisScale.domain[1]) {
+
+          svg.append("line")
+            .classed('staticVDrop', true)
+            .style('stroke-width', dropLines.width)
+            .style('stroke-dasharray', dropLines.dashCSS)
+            .style('stroke', 'gray')
+            .attr("x1", xScale(point.x)).attr("y1", height - margin.bottom)
+            .attr("x2", xScale(point.x)).attr("y2", yScale(point.y));
+
+          svg.append("line")
+            .classed('staticHDrop', true)
+            .style('stroke-width', dropLines.width)
+            .style('stroke-dasharray', dropLines.dashCSS)
+            .style('stroke', 'gray')
+            .attr("x1", xScale(xAxisScale.domain[0])).attr("y1", yScale(point.y))
+            .attr("x2", xScale(point.x)).attr("y2", yScale(point.y))
+
+
+          svg.append("circle")
+            .classed("staticIntersection", true)
+            .attr('cx', xScale(point.x))
+            .attr('cy', yScale(point.y))
+            .attr('r', '5px')
+            .style("stroke", '#5A5A5A')
+            .style("stroke-width", "2px")
+            .style('fill', 'none')
+        }
+      })
+    }
+  )
+}
+
+function _appendIntersectionObjects(d3, svg, textShadow, intersectionPoints, intersectLines, getLineByLabel, xAxisScale, yAxisScale, dropLines, xScale, height, margin, yScale) {
+  return (
+    function appendIntersectionObjects(isAwayFromOrigin = false) {
+
+
+      if (isAwayFromOrigin) {
+        d3.select('circle.staticIntersection').raise();
+        d3.selectAll("text.staticIntersection").remove();
+        const tempX = d3.select("circle.staticIntersection").attr("cx")
+        const tempY = d3.select("circle.staticIntersection").attr("cy")
+        svg.append('text')
+          .classed("staticIntersection", true)
+          .attr('x', tempX)
+          .attr('y', tempY)
+          .style('fill', 'gray')
+          .style('text-shadow', textShadow)
+          .style("font-size", 14)
+          // .style("font-weight", 'bold')
+          .text("Old equilibrium");
+
+      }
 
       // remove last objects before appending updated objects 
       svg.selectAll("circle.intersection").remove();
+      svg.selectAll("line.hDrop").remove();
+      svg.selectAll("line.vDrop").remove();
+      svg.selectAll('text.vDropLabel').remove();
+      svg.selectAll('text.hDropLabel').remove();
 
 
       intersectionPoints.map(pair => {
@@ -664,23 +712,25 @@ function _appendIntersectionObjects(svg, intersectionPoints, intersectLines, get
         if (point.x >= xAxisScale.domain[0] && point.x <= xAxisScale.domain[1] &&
           point.y >= yAxisScale.domain[0] && point.y <= yAxisScale.domain[1]) {
           // TODO: enable styling with CSS
+          // moving vertical drop line
           svg.append("line")
             .classed('vDrop', true)
             .style('stroke-width', dropLines.width)
             .style('stroke-dasharray', dropLines.dashCSS)
-            .style('stroke', () => getColor(getLineByLabel(pair.labels[0])))
+            .style('stroke', 'black')
             .attr("x1", xScale(point.x)).attr("y1", height - margin.bottom)
             .attr("x2", xScale(point.x)).attr("y2", yScale(point.y));
 
+          // moving horizontal drop line
           svg.append("line")
             .classed('hDrop', true)
             .style('stroke-width', dropLines.width)
             .style('stroke-dasharray', dropLines.dashCSS)
-            .style('stroke', () => getColor(getLineByLabel(pair.labels[0])))
-            .attr("x1", xScale(0)).attr("y1", yScale(point.y))
+            .style('stroke', 'black')
+            .attr("x1", xScale(xAxisScale.domain[0])).attr("y1", yScale(point.y))
             .attr("x2", xScale(point.x)).attr("y2", yScale(point.y))
 
-
+          // moving intersection line
           svg.append("circle")
             .classed("intersection", true)
             .attr('cx', xScale(point.x))
@@ -693,6 +743,32 @@ function _appendIntersectionObjects(svg, intersectionPoints, intersectLines, get
             .style('fill', () => {
               return (pair.isPrimary) ? 'black' : 'none'
             })
+
+          // moving numbers
+          d3.selectAll('text.vDropLabel').remove();
+          d3.selectAll('text.hDropLabel').remove();
+          svg.append('text')
+            .classed("vDropLabel", true)
+            .attr('x', xScale(point.x) - 9)
+            .attr('y', height - margin.bottom + 15)
+            .style('fill', 'black')
+            .style('text-shadow', textShadow)
+            .style("font-size", 18)
+            .style("font-weight", 'bold')
+            .text(() => `${Math.round((point.x))}`)
+
+          svg.append('text')
+            .classed("hDropLabel", true)
+            .attr('x', xScale(xAxisScale.domain[0]) - 22)
+            .attr('y', yScale(point.y) + 6)
+            .style('fill', 'black')
+            .style('text-shadow', textShadow)
+            .style("font-size", 18)
+            .style("font-weight", 'bold')
+            .text(() => `${Math.round((point.y))}`)
+
+
+
         }
       })
     }
@@ -711,8 +787,12 @@ function _appendLabels(svg, lines, getColor, textShadow, xScale, yScale) {
         .style("font-size", d => d.labelSize)
         .style('fill', d => getColor(d))
         .style('text-shadow', textShadow)
-        .attr("x", d => xScale(d.point2[0]))
-        .attr("y", d => yScale(d.point2[1]))
+        .attr("x", d => {
+          return ('x2' in d) ? d.x2 : xScale(d.point2[0])
+        })
+        .attr("y", d => {
+          return ('y2' in d) ? d.y2 : yScale(d.point2[1])
+        })
         .text(d => d.label);
     }
   )
@@ -1053,7 +1133,7 @@ export default function define(runtime, observer) {
   main.variable(observer("footer")).define("footer", _footer);
   main.variable(observer("interactionBoundary")).define("interactionBoundary", _interactionBoundary);
   main.variable(observer("cutLineOnBoundaryCross")).define("cutLineOnBoundaryCross", _cutLineOnBoundaryCross);
-  main.variable(observer()).define(["svg", "xAxis", "yAxis", "lines", "getCursor", "xScale", "yScale", "getColor", "drag", "appendHeaderFooter", "appendAnnotations", "appendLabels", "appendIntersectionObjects"], _12);
+  main.variable(observer()).define(["svg", "xAxis", "yAxis", "lines", "getCursor", "xScale", "yScale", "getColor", "drag", "appendHeaderFooter", "appendAnnotations", "appendLabels", "appendStaticIntersectionObjects", "appendIntersectionObjects"], _12);
   main.variable(observer()).define(["md"], _13);
   main.variable(observer("dropLines")).define("dropLines", _dropLines);
   main.variable(observer("LINE_MIN_LENGTH")).define("LINE_MIN_LENGTH", _LINE_MIN_LENGTH);
@@ -1071,9 +1151,10 @@ export default function define(runtime, observer) {
   main.define("initial lineMap", _lineMap);
   main.variable(observer("mutable lineMap")).define("mutable lineMap", ["Mutable", "initial lineMap"], (M, _) => new M(_));
   main.variable(observer("lineMap")).define("lineMap", ["mutable lineMap"], _ => _.generator);
-  main.variable(observer("drag")).define("drag", ["svg", "xScale", "yScale", "getColor", "lineMap", "textShadowDark", "d3", "appendIntersectionObjects", "appendLabels", "intersectLines", "yAxisLine", "interactionBoundary", "xAxisLine", "topLine", "yAxisScale", "rightLine", "xAxisScale", "distance", "xyScale", "LINE_MIN_LENGTH", "lines", "textShadow", "GHOST_MIN_DISTANCE", "getCursor"], _drag);
+  main.variable(observer("drag")).define("drag", ["svg", "xScale", "yScale", "getColor", "lineMap", "d3", "appendIntersectionObjects", "appendLabels", "intersectLines", "yAxisLine", "interactionBoundary", "xAxisLine", "topLine", "yAxisScale", "rightLine", "xAxisScale", "distance", "xyScale", "LINE_MIN_LENGTH", "GHOST_MIN_DISTANCE", "getCursor"], _drag);
   main.variable(observer("appendHeaderFooter")).define("appendHeaderFooter", ["header", "svg", "margin", "height", "footer"], _appendHeaderFooter);
-  main.variable(observer("appendIntersectionObjects")).define("appendIntersectionObjects", ["svg", "intersectionPoints", "intersectLines", "getLineByLabel", "xAxisScale", "yAxisScale", "dropLines", "getColor", "xScale", "height", "margin", "yScale"], _appendIntersectionObjects);
+  main.variable(observer("appendStaticIntersectionObjects")).define("appendStaticIntersectionObjects", ["intersectionPoints", "intersectLines", "getLineByLabel", "xAxisScale", "yAxisScale", "svg", "dropLines", "xScale", "height", "margin", "yScale"], _appendStaticIntersectionObjects);
+  main.variable(observer("appendIntersectionObjects")).define("appendIntersectionObjects", ["d3", "svg", "textShadow", "intersectionPoints", "intersectLines", "getLineByLabel", "xAxisScale", "yAxisScale", "dropLines", "xScale", "height", "margin", "yScale"], _appendIntersectionObjects);
   main.variable(observer("appendLabels")).define("appendLabels", ["svg", "lines", "getColor", "textShadow", "xScale", "yScale"], _appendLabels);
   main.variable(observer("appendAnnotations")).define("appendAnnotations", ["svg", "annotations", "textShadow"], _appendAnnotations);
   main.variable(observer("getTopMargin")).define("getTopMargin", ["header", "height"], _getTopMargin);
